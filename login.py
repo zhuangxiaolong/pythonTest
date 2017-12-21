@@ -15,7 +15,7 @@ from SqlServerHelper import *
 
 #主界面
 mainWindow=Tk()
-#root.title = "Hello"
+mainWindow.title("登录")
 mainWindow .geometry("450x300+10+10")
 
 #欢迎图片
@@ -47,7 +47,7 @@ def user_login():
        var_name=entry_user_name.get()
        var_pwd=entry_user_pwd.get()
        objSqlServerHelper=SqlServerHelper()
-       lst=objSqlServerHelper.Select("select * from employees")
+       lst=objSqlServerHelper.execute4lst("select * from employees")
        for obj in lst:
           if obj[1]==var_name:
             if obj[3]==var_pwd:
@@ -90,24 +90,32 @@ def user_sign_up():
             messagebox.showwarning(title="注册失败", message="两次密码输入不一致!")
             return
          
-       
+      
        objSqlServerHelper=SqlServerHelper()
        #检查是否已存在
-       lst=objSqlServerHelper.Select("select * from employees")
+       lst=objSqlServerHelper.execute4lst("select * from employees")
        for obj in lst:
           if obj[1]==var_new_name:
                messagebox.showwarning(title="注册失败", message="用户名："+var_new_name+"，已存在！")
                return
        
-       my_cursor=objSqlServerHelper.get_cursor()
        tsql = "INSERT INTO Employees (Name, Pwd) VALUES (?,?);"
-       with cursor.execute(tsql,var_new_name,var_new_pwd):
+       args=(var_new_name,var_new_pwd)
+       try:
+          objSqlServerHelper.insert(tsql,args)
           messagebox.showinfo(title="成功", message="注册成功, "+var_new_name)
           var_user_name.set(var_new_name)
+          window_sign_up.destroy()
+       except Exception as e:
+          print(e)#加入打印
+
+    def cannel_sign_up():
           window_sign_up.destroy()
 
     btn_comfirm_sign_up = Button(window_sign_up, text="确定", command=comfirm_sign_up)
     btn_comfirm_sign_up.place(x=150, y=130)
+    btn_cannel_sign_up = Button(window_sign_up, text="取消", command=cannel_sign_up)
+    btn_cannel_sign_up.place(x=250, y=130)
 
 
 #加入按钮
