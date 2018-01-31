@@ -226,10 +226,10 @@ def BuildWordFile(strFilename,path):
                  print(str(totalRowIndex)+"添加汇总："+apiName+" "+description)
                  totalRowIndex=totalRowIndex+1
                  #测试
-                 #'''
+                 '''
                  if totalRowIndex==5:
                      break
-                 #'''
+                 '''
 
        for api in schema.getchildren():
           #获取参数
@@ -302,10 +302,10 @@ def BuildWordFile(strFilename,path):
               responseTable.cell(4, 0).text = "401"
               responseTable.cell(5, 0).text = "500"
               #测试
-              #'''
+              '''
               if apiCount==5:
                  break
-              #'''
+              '''
           
        document.add_page_break()
        document.save("c:\\"+filename+"接口说明文档.docx")
