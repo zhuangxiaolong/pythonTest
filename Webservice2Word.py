@@ -9,6 +9,8 @@ from docx.shared import RGBColor #这个是docx的颜色类
 from docx.enum.style import WD_STYLE_TYPE
 #pip install translate
 from translate import Translator
+import requests
+from urllib.request import urlopen
 
 def add_hyperlink(paragraph, text, url):
     # This gets access to the document.xml.rels file and gets a new relation id value
@@ -224,10 +226,10 @@ def BuildWordFile(strFilename,path):
                  print(str(totalRowIndex)+"添加汇总："+apiName+" "+description)
                  totalRowIndex=totalRowIndex+1
                  #测试
-                 '''
+                 #'''
                  if totalRowIndex==5:
                      break
-                 '''
+                 #'''
 
        for api in schema.getchildren():
           #获取参数
@@ -300,22 +302,27 @@ def BuildWordFile(strFilename,path):
               responseTable.cell(4, 0).text = "401"
               responseTable.cell(5, 0).text = "500"
               #测试
-              '''
+              #'''
               if apiCount==5:
                  break
-              '''
+              #'''
           
        document.add_page_break()
        document.save("c:\\"+filename+"接口说明文档.docx")
+       print("生成文档完成，"+"c:\\"+filename+"接口说明文档.docx")
     except Exception as e:
        print(e)  # 加入打印
 
 
-def requestUrl(str_link):
+def requestUrl(str_link,filename):
     try:  # 加入try catch
-               #r = requests.get(str_link)
-               #html=decodeHtml(r)
-               BuildWordFile("SwtTotalWebService","c:\SwtTotalWebService.xml")
+               r = requests.get(str_link)
+               html=decodeHtml(r)
+               fileFullname="c:/%s.xml"%(filename)
+               #先把xml保存下来再去读取
+               with open(fileFullname,"w") as f:
+                    f.write(html)
+               BuildWordFile(filename,fileFullname)
 
     except Exception as e:
             print(e)  # 加入打印
@@ -323,5 +330,5 @@ def requestUrl(str_link):
 
 if __name__ == "__main__":
         URL = "http://localhost:11417/cachewebservices/SwtTotalWebService.asmx?WSDL"
-        requestUrl(URL)
+        requestUrl(URL,"SwtTotalWebService")
         print("Done")

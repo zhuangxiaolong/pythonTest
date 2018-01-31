@@ -139,7 +139,7 @@ if __name__ == "__main__":
     pool = mp.Pool(processes=10) #开启10个进程
     i = 1
     while i <= 100:
-        URL = "http://t66y.com/thread0806.php?fid=8&search=&type=1&page=" + \
+        URL = "http://t66y.com/thread0806.php?fid=8&page=" + \
                str(i)
         #pool.map(multiTime,URL)
         print("Process Start")
