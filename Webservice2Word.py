@@ -11,6 +11,9 @@ from docx.enum.style import WD_STYLE_TYPE
 from translate import Translator
 import requests
 from urllib.request import urlopen
+#pip install mtranslate 好像这个翻译准确一点
+from mtranslate import translate
+
 
 def add_hyperlink(paragraph, text, url):
     # This gets access to the document.xml.rels file and gets a new relation id value
@@ -48,16 +51,16 @@ def decodeHtml(req):
 def myTranslator(str):
     #有可能连接不上服务器翻译，重试5次
     tryNum=0
-    while tryNum<5:
+    while tryNum<10:
         tryNum=tryNum+1
-        result=doTranslator(str)
+        result=doTranslator2(str)
         if (result!=str):
             return result
     return str
 def doTranslator(str):
     try:
        #准备翻译
-       translator= Translator(to_lang="zh")
+       translator= Translator(to_lang="zh-CN")
        list = []
     
        word=""
@@ -118,7 +121,7 @@ def doTranslator(str):
                       result=result+" 菜"
                       continue
            elif w=="Desk":
-                      result=result+" 桌"
+                      result=result+" 台"
                       continue
            elif w=="Del":
                       result=result+"删除"
@@ -136,7 +139,7 @@ def doTranslator(str):
                       result=result+" 数字"
                       continue
            elif w=="Key":
-                      result=result+" 密钥"
+                      result=result+" 键"
                       continue
            elif w=="token":
                       result=result+" 密钥"
@@ -146,10 +149,148 @@ def doTranslator(str):
            elif w=="Right":
                       result=result+" 权限"
                       continue
+           elif w=="Pos":
+                      result=result+" 收银机"
+                      continue
+           elif w=="Col":
+                      result=result+" 列"
+                      continue
+           elif w=="SQL":
+                      result=result+" 数据脚本"
+                      continue
+           elif w=="Save":
+                      result=result+" 保存"
+                      continue
+           elif w=="Hall":
+                      result=result+" 大厅"
+                      continue
+           elif w=="Init":
+                      result=result+" 初始化"
+                      continue
+           elif w=="Data":
+                      result=result+" 数据"
+                      continue
+           elif w=="Table":
+                      result=result+" 表"
+                      continue
+           elif w=="Getdgv":
+                      result=result+" 获取显示表"
+                      continue
            else:
                       result=result+" "+w
 
        translation = translator.translate(result)
+       return translation
+    except Exception as e:
+       print(e)  # 加入打印
+       return str
+    
+def doTranslator2(str):
+    try:
+       list = []
+    
+       word=""
+       for i,s in enumerate(str):
+          if s=="_":
+             list.append(word)
+             word=s
+             continue
+          if s.isupper():
+              if i==0:
+                  word=word+s
+              else:
+                  if word.find("_")!=-1:
+                      if len(word)==2:
+                         word=s
+                         continue
+                  list.append(word)
+                  word=s  
+          else:
+             word=word+s
+           
+           #如果是最后的字符
+          if i==len(str)-1:
+                  list.append(word)
+       result=""
+       for w in list:
+           #处理特殊字符
+           if w=="_":
+                      continue
+           if w=="s":
+                      continue
+           if w=="n":
+                      continue
+           elif w=="_c":
+                      result=result+" 编号"
+                      continue
+           elif w=="_n":
+                      result=result+" 名称"
+                      continue
+           elif w.upper()=="M":
+                      continue
+           elif w.upper()=="S":
+                      continue
+           elif w.upper()=="T":
+                      continue
+           elif w.upper()=="D":
+                      continue
+           elif w=="Getdt":
+                      result=result+" 获取数据表"
+                      continue
+           elif w.upper()=="DT":
+                      result=result+" 数据表"
+                      continue
+           elif w=="Dish":
+                      result=result+" 菜"
+                      continue
+           elif w=="Del":
+                      result=result+" 删除"
+                      continue
+           elif w=="Pic":
+                      result=result+" 照片"
+                      continue
+           elif w=="Exec":
+                      result=result+" 执行"
+                      continue
+           elif w=="Depart":
+                      result=result+" 部门"
+                      continue
+           elif w=="Num":
+                      result=result+" 数字"
+                      continue
+           elif w=="token":
+                      result=result+" 密钥"
+           elif w=="st":
+                      result=result+" 空"
+                      continue
+           elif w=="Right":
+                      result=result+" 权限"
+                      continue
+           elif w=="Pos":
+                      result=result+" 收银机"
+                      continue
+           elif w=="Col":
+                      result=result+" 列"
+                      continue
+           elif w=="SQL":
+                      result=result+" 数据脚本"
+                      continue
+           elif w=="Save":
+                      result=result+" 保存"
+                      continue
+           elif w=="Hall":
+                      result=result+" 大厅"
+                      continue
+           elif w=="Init":
+                      result=result+" 初始化"
+                      continue
+           elif w=="Getdgv":
+                      result=result+" 获取显示表"
+                      continue
+           else:
+                      result=result+" "+w
+
+       translation = translate(result, 'zh',"en")
        return translation
     except Exception as e:
        print(e)  # 加入打印
@@ -183,7 +324,7 @@ def BuildWordFile(strFilename,path):
        style3.font.name="Consolas"
        
        #先生成一个汇总表格
-       document.add_paragraph(u'接口调用说明和清单',style='Heading 2')
+       document.add_paragraph(u'接口调用说明和清单',style='Heading 3')
        
        totalRow=1
        for api in schema.getchildren():
