@@ -1,5 +1,9 @@
-  cnames = [
-     '#F0F8FF',
+class DataChange:
+    def __init__(self):
+        ''''' initialization '''
+
+    def get_change_data(self):
+         cnames = ['#F0F8FF',
      '#FAEBD7',
      '#00FFFF',
      '#7FFFD4',
@@ -85,7 +89,7 @@
      '#9370DB',
      '#3CB371',
      '#7B68EE',
-:    '#00FA9A',
+    '#00FA9A',
      '#48D1CC',
      '#C71585',
      '#191970',
@@ -138,5 +142,4 @@
      '#F5F5F5',
      '#FFFF00',
      '#9ACD32']
-
-print(cnames)
+         return cnames
